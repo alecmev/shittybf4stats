@@ -10,7 +10,7 @@ var app = express()
   , img = new canvas.Image()
   , invalidchars = /[^A-Za-z0-9_\-]/;
 
-db.ensureIndex({ fieldName: 'somefield' }, function(err) {
+db.ensureIndex({ fieldName: 'name' }, function(err) {
     if (err) {
         throw err;
     }
@@ -49,7 +49,7 @@ var render = function(query, cb) {
     ctx.fillText(query, text.left, text.top);
 
     imgur.uploadBase64(cnv.toDataURL().substring(22)).then(function(json) {
-        db.insert({ name: query, url: json.data.link });
+        db.insert({ name: query, url: json.data.link, timestamp: Date.now() });
         cb(json.data.link);
     }).catch(function(err) {
         throw err;
