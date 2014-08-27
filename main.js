@@ -1,4 +1,5 @@
 var express = require('express')
+  , cons = require('consolidate')
   , nedb = require('nedb')
   , fs = require('fs')
   , canvas = require('canvas')
@@ -55,6 +56,14 @@ var render = function(query, cb) {
     });
 };
 
+app.engine('html', cons.dust);
+app.set('view engine', 'html');
+app.set('views', __dirname + '/views');
+
+app.get('/', function(req, res) {
+    res.render('index');
+});
+
 app.get('/:q', function(req, res) {
     var query = req.params.q;
     if (query.length < 4) {
@@ -73,24 +82,22 @@ app.get('/:q', function(req, res) {
         return;
     }
 
-    console.log('\n' + query);
     db.findOne({ name: query }, function(err, doc) {
         if (err) {
             throw err;
         }
 
         if (doc) {
-            console.log(doc.url);
-            res.redirect(doc.url);
+            console.log('      ' + query + ': ' + doc.url);
+            res.redirect(303, doc.url);
             return;
         }
 
-        console.log('NOT cached');
         render(query, function(url) {
-            console.log(url);
-            res.redirect(url);
+            console.log('[NEW] ' + query + ': ' + url);
+            res.redirect(303, url);
         });
     });
 });
 
-app.listen(8080);
+app.listen(7237);
