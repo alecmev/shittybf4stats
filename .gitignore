@@ -1,0 +1,5 @@
+node_modules/
+
+*.db
+*.sublime-workspace
+*.log
