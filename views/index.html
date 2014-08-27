@@ -30,7 +30,7 @@
     </div>
     <script>
         var go = function() {
-            window.location = 'http://localhost:8080/' + $('input').get('value');
+            window.location = '/' + $('input').get('value');
         };
         $('button').addEvent('click', go);
         $('input').addEvent('keypress', function(e) {
