@@ -8,6 +8,7 @@
 </div>
 <script>
     $$('.catcher').addEvent('click', function() {
+        ga('send', 'event', 'result', 'select-' + this.getProperty('data-type'));
         this.getParent().getElement('.form-control').setSelectionRange(0, 8192);
     });
 </script>

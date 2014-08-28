@@ -2,21 +2,24 @@
 <div>
     <img src="http://i.imgur.com/dqyYpNf.png" />
     <div class="input-group">
-        <input class="form-control" id="input" type="text" placeholder="Your name">
+        <input class="form-control" id="input" placeholder="Your name">
         <span class="input-group-btn">
-            <button class="btn btn-warning" id="button" type="button">GIMME</button>
+            <button class="btn btn-warning" id="button">GIMME</button>
         </span>
     </div>
     {>links /}
 </div>
 <script>
-    var go = function() {
+    var submit = function(label) {
+        ga('send', 'event', 'index', 'submit-' + label);
         window.location = '/' + $('input').get('value');
     };
-    $('button').addEvent('click', go);
+    $('button').addEvent('click', function() {
+        submit('button');
+    });
     $('input').addEvent('keypress', function(e) {
         if ('enter' == e.key) {
-            go();
+            submit('enter');
         }
     });
 </script>

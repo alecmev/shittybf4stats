@@ -3,14 +3,20 @@ var express = require('express')
   , nedb = require('nedb')
   , fs = require('fs')
   , canvas = require('canvas')
-  , imgur = require('imgur')
+  , imgur = require('imgur');
 
 var app = express()
   , db = new nedb({ filename: 'cache.db', autoload: true })
   , img = new canvas.Image()
-  , invalidchars = /[^A-Za-z0-9_\-]/;
+  , invalidchars = /[^A-Za-z0-9_\- ]/;
 
 db.ensureIndex({ fieldName: 'name' }, function(err) {
+    if (err) {
+        throw err;
+    }
+});
+
+db.ensureIndex({ fieldName: 'timestamp' }, function(err) {
     if (err) {
         throw err;
     }
@@ -73,8 +79,24 @@ app.get('/main.css', function(req, res) {
     res.sendFile(__dirname + '/main.css');
 });
 
+app.get('/!', function(req, res) {
+    db.count({}, function(err1, count1) {
+        if (err1) {
+            throw err1;
+        }
+
+        db.count({ timestamp: { $gt: Date.now() - 3600000 } }, function(err2, count2) {
+            if (err2) {
+                throw err2;
+            }
+
+            res.send('total signatures: ' + count1 + '<br />' + 'in last hour: ' + count2);
+        });
+    });
+});
+
 app.get('/:q', function(req, res) {
-    var query = req.params.q;
+    var query = req.params.q.trim();
     if (query.length < 4) {
         res.send('ERROR: too short, should be at least 4 chars');
         return;
@@ -98,13 +120,13 @@ app.get('/:q', function(req, res) {
 
         if (doc) {
             console.log('      ' + query + ': ' + doc.url);
-            res.render('query', doc);
+            res.render('result', doc);
             return;
         }
 
         generate(query, function(doc) {
             console.log('[NEW] ' + query + ': ' + doc.url);
-            res.render('query', doc);
+            res.render('result', doc);
         });
     });
 });
