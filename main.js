@@ -79,7 +79,7 @@ app.get('/main.css', function(req, res) {
     res.sendFile(__dirname + '/main.css');
 });
 
-app.get('/!', function(req, res) {
+app.get('//', function(req, res) {
     db.count({}, function(err1, count1) {
         if (err1) {
             throw err1;
