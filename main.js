@@ -24,7 +24,7 @@ fs.readFile(__dirname + '/background.png', function(err, data) {
     img.src = data;
 });
 
-var render = function(query, cb) {
+var generate = function(query, cb) {
     var cnv = new canvas(img.width, img.height)
       , ctx = cnv.getContext('2d');
 
@@ -49,8 +49,9 @@ var render = function(query, cb) {
     ctx.fillText(query, text.left, text.top);
 
     imgur.uploadBase64(cnv.toDataURL().substring(22)).then(function(json) {
-        db.insert({ name: query, url: json.data.link, timestamp: Date.now() });
-        cb(json.data.link);
+        var doc = { name: query, url: json.data.link, timestamp: Date.now() };
+        db.insert(doc);
+        cb(doc);
     }).catch(function(err) {
         throw err;
     });
@@ -62,6 +63,14 @@ app.set('views', __dirname + '/views');
 
 app.get('/', function(req, res) {
     res.render('index');
+});
+
+app.get('/favicon.png', function(req, res) {
+    res.sendFile(__dirname + '/favicon.png');
+});
+
+app.get('/main.css', function(req, res) {
+    res.sendFile(__dirname + '/main.css');
 });
 
 app.get('/:q', function(req, res) {
@@ -89,13 +98,13 @@ app.get('/:q', function(req, res) {
 
         if (doc) {
             console.log('      ' + query + ': ' + doc.url);
-            res.redirect(303, doc.url);
+            res.render('query', doc);
             return;
         }
 
-        render(query, function(url) {
-            console.log('[NEW] ' + query + ': ' + url);
-            res.redirect(303, url);
+        generate(query, function(doc) {
+            console.log('[NEW] ' + query + ': ' + doc.url);
+            res.render('query', doc);
         });
     });
 });

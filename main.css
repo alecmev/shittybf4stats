@@ -1,0 +1,28 @@
+body > div {
+    margin: 0 auto;
+    padding-top: 48px;
+    text-align: center;
+    width: 384px;
+}
+
+.input-group {
+    margin-top: 12px;
+    position: relative;
+}
+
+.input-group-addon {
+    border-left: 0px;
+}
+
+.catcher {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 3;
+}
+
+.links {
+    display: inline-block;
+}

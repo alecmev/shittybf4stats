@@ -1,0 +1,14 @@
+{>header /}
+<div>
+    <img src="{url}" />
+    {>code type="HTML" value="<a href='http://bit.ly/sbf4s'><img src='{url}' /></a>" /}
+    {>code type="BB" value="[url=http://bit.ly/sbf4s][img]{url}[/img][/url]" /}
+    {>code type="IMG" value="{url}" /}
+    {>links /}
+</div>
+<script>
+    $$('.catcher').addEvent('click', function() {
+        this.getParent().getElement('.form-control').setSelectionRange(0, 8192);
+    });
+</script>
+{>footer /}
